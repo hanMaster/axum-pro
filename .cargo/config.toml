@@ -1,0 +1,23 @@
+# Cargo config file
+
+# Environment variables for all `cargo ...` commands.
+[env]
+
+# Scope down tracing, to filter out external tracing.
+RUST_LOG = "axum_pro=debug"
+
+# -- Service Environment Variables
+# IMPORTANT:
+#   For cargo commands only.
+#   For deployed env, should be managed by container
+#   (e.g., Kubernetes)
+
+## -- Secrets
+# Keys and passwords below are for localhost dev ONLY.
+SERVICE_DB_URL = "postgres://app_user:dev_only_pwd@localhost/app_db"
+
+## -- ConfigMap
+
+# This will be relative to Cargo.toml
+# In deployed images, probably use absolute path.
+SERVICE_WEB_FOLDER = "web-folder/"
