@@ -10,6 +10,7 @@ use tracing::info;
 use tracing_subscriber::EnvFilter;
 
 mod config;
+mod crypt;
 mod ctx;
 mod error;
 mod log;

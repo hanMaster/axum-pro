@@ -16,6 +16,10 @@ RUST_LOG = "axum_pro=debug"
 # Keys and passwords below are for localhost dev ONLY.
 SERVICE_DB_URL = "postgres://app_user:dev_only_pwd@localhost/app_db"
 
+SERVICE_PWD_KEY = "39FcqiMmGch6kacS8sWxm84CtC9Kwd4PqcfxWb49myKVnnEO5aI27GkFa1SL5HVGOjE4rnyTghclTGnrGr1l0w"
+SERVICE_TOKEN_KEY = "YmDRmWNfuY_Z3167OlOCbobqD5hTYqFIBbrkiKheTJ0lJdD5uibO1e3GSVMe932raxja1bpQUAihqfyTRKhzXg"
+SERVICE_TOKEN_DURATION_SEC = "1800" # 30 minutes
+
 ## -- ConfigMap
 
 # This will be relative to Cargo.toml
