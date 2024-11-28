@@ -30,17 +30,17 @@ async fn main() -> Result<()> {
         .init();
 
     // -- FOR DEV ONLY
-    _dev_utils::init_dev().await;
+    // _dev_utils::init_dev().await;
 
     // Initialize ModelManager.
-    let _mm = ModelManager::new().await?;
+    let mm = ModelManager::new().await?;
 
     // -- Define Routes
     // let routes_rpc = rpc::routes(mm.clone())
     //   .route_layer(middleware::from_fn(mw_ctx_require));
 
     let routes_all = Router::new()
-        .merge(routes_login::routes())
+        .merge(routes_login::routes(mm.clone()))
         // .nest("/api", routes_rpc)
         .layer(middleware::map_response(mw_response_map))
         .layer(middleware::from_fn(web::mw_auth::mw_ctx_resolve))
