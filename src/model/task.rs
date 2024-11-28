@@ -1,6 +1,6 @@
 use crate::ctx::Ctx;
 use crate::model::base::DbBmc;
-use crate::model::{base, Error, ModelManager, Result};
+use crate::model::{base, ModelManager, Result};
 use serde::{Deserialize, Serialize};
 use sqlb::Fields;
 use sqlx::FromRow;
@@ -65,6 +65,7 @@ impl TaskBmc {
 mod tests {
     use super::*;
     use crate::_dev_utils;
+    use crate::model::Error;
     use serial_test::serial;
 
     #[serial]

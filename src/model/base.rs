@@ -1,7 +1,7 @@
 use crate::ctx::Ctx;
 use crate::model::Result;
 use crate::model::{Error, ModelManager};
-use sqlb::{HasFields, Whereable};
+use sqlb::HasFields;
 use sqlx::postgres::PgRow;
 use sqlx::FromRow;
 
