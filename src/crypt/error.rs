@@ -6,6 +6,7 @@ pub type Result<T> = ::std::result::Result<T, Error>;
 #[derive(Debug, Serialize)]
 pub enum Error {
     KeyFailHmac,
+    PwdNotMatching,
 }
 
 // region:    --- Error boilerplate

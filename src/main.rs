@@ -1,4 +1,5 @@
 pub use self::error::Result;
+pub use crate::config::config;
 use crate::model::ModelManager;
 use crate::web::mw_res_map::mw_response_map;
 use crate::web::{routes_login, routes_static};
@@ -8,7 +9,6 @@ use tokio::net::TcpListener;
 use tower_cookies::CookieManagerLayer;
 use tracing::info;
 use tracing_subscriber::EnvFilter;
-
 mod config;
 mod crypt;
 mod ctx;
@@ -30,7 +30,7 @@ async fn main() -> Result<()> {
         .init();
 
     // -- FOR DEV ONLY
-    // _dev_utils::init_dev().await;
+    _dev_utils::init_dev().await;
 
     // Initialize ModelManager.
     let _mm = ModelManager::new().await?;
