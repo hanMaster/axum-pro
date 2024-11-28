@@ -15,6 +15,7 @@ mod ctx;
 mod error;
 mod log;
 mod model;
+mod utils;
 mod web;
 // only for tests
 pub mod _dev_utils;
