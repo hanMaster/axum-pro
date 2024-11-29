@@ -5,8 +5,19 @@ pub type Result<T> = ::std::result::Result<T, Error>;
 
 #[derive(Debug, Serialize, Clone)]
 pub enum Error {
+    // -- Key
     KeyFailHmac,
+
+    // -- Pwd
     PwdNotMatching,
+
+    // -- Token
+    TokenInvalidFormat,
+    TokenCannotDecodeIdent,
+    TokenCannotDecodeExp,
+    TokenSignatureNotMatching,
+    TokenExpNotISO,
+    TokenExpired,
 }
 
 // region:    --- Error boilerplate
