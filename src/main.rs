@@ -3,6 +3,8 @@ pub use crate::config::config;
 use crate::model::ModelManager;
 use crate::web::mw_res_map::mw_response_map;
 use crate::web::{routes_login, routes_static};
+use axum::response::Html;
+use axum::routing::get;
 use axum::{middleware, Router};
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
@@ -20,6 +22,7 @@ mod web;
 // only for tests
 pub mod _dev_utils;
 
+use crate::web::mw_auth::mw_ctx_require;
 pub use config::Config;
 
 #[tokio::main]
@@ -31,7 +34,7 @@ async fn main() -> Result<()> {
         .init();
 
     // -- FOR DEV ONLY
-    // _dev_utils::init_dev().await;
+    _dev_utils::init_dev().await;
 
     // Initialize ModelManager.
     let mm = ModelManager::new().await?;
@@ -40,11 +43,19 @@ async fn main() -> Result<()> {
     // let routes_rpc = rpc::routes(mm.clone())
     //   .route_layer(middleware::from_fn(mw_ctx_require));
 
+    let routes_hello = Router::new()
+        .route("/hello", get(|| async { Html("Hello, world!") }))
+        .route_layer(middleware::from_fn(mw_ctx_require));
+
     let routes_all = Router::new()
         .merge(routes_login::routes(mm.clone()))
+        .merge(routes_hello)
         // .nest("/api", routes_rpc)
         .layer(middleware::map_response(mw_response_map))
-        .layer(middleware::from_fn(web::mw_auth::mw_ctx_resolve))
+        .layer(middleware::from_fn_with_state(
+            mm.clone(),
+            web::mw_auth::mw_ctx_resolve,
+        ))
         .layer(CookieManagerLayer::new())
         .fallback_service(routes_static::serve_dir());
 
