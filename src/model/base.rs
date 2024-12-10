@@ -1,12 +1,23 @@
 use crate::ctx::Ctx;
 use crate::model::Result;
 use crate::model::{Error, ModelManager};
-use sqlb::HasFields;
+use modql::field::HasFields;
+use modql::SIden;
+use sea_query::{Iden, IntoIden, PostgresQueryBuilder, Query, TableRef};
+use sea_query_binder::SqlxBinder;
 use sqlx::postgres::PgRow;
 use sqlx::FromRow;
 
+#[derive(Iden)]
+pub enum CommonIden {
+    Id,
+}
 pub trait DbBmc {
     const TABLE: &'static str;
+
+    fn table_ref() -> TableRef {
+        TableRef::Table(SIden(Self::TABLE).into_iden())
+    }
 }
 
 pub async fn create<MC, E>(_ctx: &Ctx, mm: &ModelManager, data: E) -> Result<i64>
@@ -15,12 +26,23 @@ where
     E: HasFields,
 {
     let db = mm.db();
+
+    // -- Extract fields (name / sea-query value expression)
     let fields = data.not_none_fields();
-    let (id,) = sqlb::insert()
-        .table(MC::TABLE)
-        .data(fields)
-        .returning(&["id"])
-        .fetch_one::<_, (i64,)>(db)
+    let (columns, sea_values) = fields.for_sea_insert();
+
+    // -- Build query
+    let mut query = Query::insert();
+    query
+        .into_table(MC::table_ref())
+        .columns(columns)
+        .values(sea_values)?
+        .returning(Query::returning().columns([CommonIden::Id]));
+
+    // -- Exec query
+    let (sql, values) = query.build_sqlx(PostgresQueryBuilder);
+    let (id,) = sqlx::query_as_with::<_, (i64,), _>(&sql, values)
+        .fetch_one(db)
         .await?;
     Ok(id)
 }
