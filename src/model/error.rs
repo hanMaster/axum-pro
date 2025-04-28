@@ -8,7 +8,7 @@ use std::sync::Arc;
 pub type Result<T> = core::result::Result<T, Error>;
 
 #[serde_as]
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Clone, From)]
 pub enum Error {
     // -- Entity
     EntityNotFound { entity: &'static str, id: i64 },
@@ -19,7 +19,8 @@ pub enum Error {
 
     // -- Externals
     Sqlx(#[serde_as(as = "DisplayFromStr")] Arc<sqlx::Error>),
-    SeaQuery(#[serde_as(as = "DisplayFromStr")] Arc<sea_query::error::Error>),
+
+    SeaQuery(#[serde_as(as = "DisplayFromStr")] sea_query::error::Error),
 }
 
 // region:    --- Froms
@@ -38,12 +39,6 @@ impl From<store::Error> for Error {
 impl From<sqlx::Error> for Error {
     fn from(value: sqlx::Error) -> Self {
         Self::Sqlx(Arc::new(value))
-    }
-}
-
-impl From<sea_query::error::Error> for Error {
-    fn from(value: sea_query::error::Error) -> Self {
-        Self::SeaQuery(Arc::new(value))
     }
 }
 // endregion: --- Froms
